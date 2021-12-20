@@ -26,6 +26,11 @@ jobs:
     - name: Calculate Tag
       uses: aserto-dev/sver-action@v0.0.14
       id: "sver"
+      with:
+        docker_image: ${{ steps.config.outputs.repo }}
+        docker_registry: ${{ steps.config.outputs.server }}
+        docker_username: ${{ steps.config.outputs.username }}
+        docker_password: ${{ steps.config.outputs.password }}
 
     - name: Policy Login
       id: policy-login
@@ -35,26 +40,29 @@ jobs:
         password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
         server: ${{ steps.config.outputs.server }}
 
-    - name: Policy Build
-      id: policy-build
-      uses: opcr-io/policy-build-action@v1
-      with:
-        src: src
-        tag: ${{steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
-        revision: "$GITHUB_SHA"
-      env:
-        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+    - name: Output Version
+      run: echo ${{ steps.sver.outputs.version }} 
 
-    - name: Policy Push
-      id: policy-push
-      uses: opcr-io/policy-push-action@v1
-      with:
-        tag: ${{ steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
-      env:
-        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+    # - name: Policy Build
+    #   id: policy-build
+    #   uses: opcr-io/policy-build-action@v1
+    #   with:
+    #     src: src
+    #     tag: ${{steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
+    #     revision: "$GITHUB_SHA"
+    #   env:
+    #     POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
-    - name: Policy Logout
-      id: policy-logout
-      uses: opcr-io/policy-logout-action@v1
-      with:
-        server: ${{ steps.config.outputs.server }}
+    # - name: Policy Push
+    #   id: policy-push
+    #   uses: opcr-io/policy-push-action@v1
+    #   with:
+    #     tag: ${{ steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
+    #   env:
+    #     POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+
+    # - name: Policy Logout
+    #   id: policy-logout
+    #   uses: opcr-io/policy-logout-action@v1
+    #   with:
+    #     server: ${{ steps.config.outputs.server }}
