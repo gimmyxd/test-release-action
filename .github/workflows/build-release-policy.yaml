@@ -1,0 +1,60 @@
+name: build-release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - '*'
+
+jobs:
+  release_policy:
+    runs-on: ubuntu-latest
+    name: build
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Read config
+      id: config
+      uses: CumulusDS/get-yaml-paths-action@v0.1.1
+      with:
+        file: .github/config.yaml
+        username: username
+        repo: repo
+        server: server
+
+    - name: Calculate Tag
+      uses: aserto-dev/sver-action@v0.0.14
+      id: "sver"
+
+    - name: Policy Login
+      id: policy-login
+      uses: opcr-io/policy-login-action@v1
+      with:
+        username: ${{ steps.config.outputs.username }}
+        password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
+        server: ${{ steps.config.outputs.server }}
+
+    - name: Policy Build
+      id: policy-build
+      uses: opcr-io/policy-build-action@v1
+      with:
+        src: src
+        tag: ${{steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
+        revision: "$GITHUB_SHA"
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+
+    - name: Policy Push
+      id: policy-push
+      uses: opcr-io/policy-push-action@v1
+      with:
+        tag: ${{ steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+
+    - name: Policy Logout
+      id: policy-logout
+      uses: opcr-io/policy-logout-action@v1
+      with:
+        server: ${{ steps.config.outputs.server }}
