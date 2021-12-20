@@ -30,7 +30,7 @@ jobs:
         docker_image: ${{ steps.config.outputs.repo }}
         docker_registry: ${{ steps.config.outputs.server }}
         docker_username: ${{ steps.config.outputs.username }}
-        docker_password: ${{ steps.config.outputs.password }}
+        docker_password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
 
     - name: Policy Login
       id: policy-login
