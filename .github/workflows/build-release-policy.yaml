@@ -40,9 +40,6 @@ jobs:
         password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
         server: ${{ steps.config.outputs.server }}
 
-    - name: Output Version
-      run: echo ${{ steps.sver.outputs.version }}
-
     - name: Policy Build
       id: policy-build
       uses: opcr-io/policy-build-action@v1
