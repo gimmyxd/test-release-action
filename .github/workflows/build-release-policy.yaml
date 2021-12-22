@@ -57,7 +57,7 @@ jobs:
         source_tag: ${{ steps.config.outputs.repo }}
         target_tags: ${{ steps.config.outputs.version }}
       env:
-        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+        POLICY_DEFAULT_DOMAIN: ${{ steps.sver.outputs.server }}
 
     # - name: Policy Push
     #   id: policy-push
