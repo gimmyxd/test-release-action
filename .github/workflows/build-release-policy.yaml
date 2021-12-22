@@ -55,9 +55,9 @@ jobs:
       uses: opcr-io/policy-tag-action@e635701fb7abeb4dfb45a091655271a3bbe11676
       with:
         source_tag: ${{ steps.config.outputs.repo }}
-        target_tags: ${{ steps.config.outputs.version }}
+        target_tags: ${{ steps.sver.outputs.version }}
       env:
-        POLICY_DEFAULT_DOMAIN: ${{ steps.sver.outputs.server }}
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
     # - name: Policy Push
     #   id: policy-push
