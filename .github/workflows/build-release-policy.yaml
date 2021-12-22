@@ -73,7 +73,7 @@ jobs:
 
     - name: Policy Push
       id: policy-push
-      uses: opcr-io/policy-push-action@bdadf2d078954467b47f97c1aa121fe34e0ecd02
+      uses: opcr-io/policy-push-action@4644475d0590b6cc0bb6edc27d51e9f24404e21d
       with:
         tag: ${{ steps.tags.outputs.target_tags }}
       env:
