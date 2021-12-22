@@ -41,17 +41,26 @@ jobs:
         server: ${{ steps.config.outputs.server }}
 
     - name: Output Version
-      run: echo ${{ steps.sver.outputs.version }} 
+      run: echo ${{ steps.sver.outputs.version }}
 
-    # - name: Policy Build
-    #   id: policy-build
-    #   uses: opcr-io/policy-build-action@v1
-    #   with:
-    #     src: src
-    #     tag: ${{steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
-    #     revision: "$GITHUB_SHA"
-    #   env:
-    #     POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+    - name: Policy Build
+      id: policy-build
+      uses: opcr-io/policy-build-action@v1
+      with:
+        src: src
+        tag: ${{ steps.config.outputs.repo }}
+        revision: "$GITHUB_SHA"
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+
+    - name: Policy Tag
+      id: policy-tag
+      uses: opcr-io/policy-tag-action@e635701fb7abeb4dfb45a091655271a3bbe11676
+      with:
+        source_tag: ${{ steps.config.outputs.repo }}
+        target_tags: ${{ steps.config.outputs.version }}
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
     # - name: Policy Push
     #   id: policy-push
