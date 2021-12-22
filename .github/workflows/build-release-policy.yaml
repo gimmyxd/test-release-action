@@ -70,7 +70,7 @@ jobs:
           target_tags+="$repo_name:$tag "
         done
 
-      echo "::set-output name=target_tags::$(target_tags)"
+        echo "::set-output name=target_tags::$(target_tags)"
 
     - name: Policy Push
       id: policy-push
