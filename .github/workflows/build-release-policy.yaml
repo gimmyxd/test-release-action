@@ -23,21 +23,24 @@ jobs:
         repo: repo
         server: server
 
-    - name: Calculate Tag
+    - name: List Sver Tags
       uses: aserto-dev/sver-action@v0.0.14
-      id: "tags"
+      id: "sver"
       with:
         docker_image: ${{ steps.config.outputs.repo }}
         docker_registry: ${{ steps.config.outputs.server }}
         docker_username: ${{ steps.config.outputs.username }}
         docker_password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
+
+    - name: Calculate image tags
+      id: "calculate-tags"
       run: |
         tags=""
         repo_name="${{ steps.config.outputs.repo }}"
 
         while read -r tag; do
           tags="$tags $repo_name:$tag "
-        done < <(echo "${{ steps.tags.outputs.version }}")
+        done < <(echo "${{ steps.sver.outputs.version }}")
 
         echo ::set-output name=target_tags::$tags
 
@@ -64,7 +67,7 @@ jobs:
       uses: opcr-io/policy-tag-action@@e635701fb7abeb4dfb45a091655271a3bbe11676
       with:
         source_tag: ${{ steps.config.outputs.repo }}
-        target_tags: ${{ steps.tags.outputs.target_tags }}
+        target_tags: ${{ steps.calculate-tag.outputs.target_tags }}
       env:
         POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
@@ -72,7 +75,7 @@ jobs:
       id: policy-push
       uses: opcr-io/policy-push-action@v1
       with:
-        tag: ${{ steps.push-tags.outputs.target_tags }}
+        tag: ${{ steps.calculate-tag.outputs.target_tags }}
       env:
         POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
