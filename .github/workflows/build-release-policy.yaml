@@ -65,9 +65,9 @@ jobs:
         tags=""
         repo_name="${{ steps.config.outputs.repo }}"
 
-        for tag in "${{ steps.sver.outputs.version }}"; do
-          tags+="$repo_name:$tag "
-        done
+        while read -r tag; do
+          tags="$tags repo_name:$tag "
+        done < <(echo "${{ steps.sver.outputs.version }}")
 
         echo "::set-output name=target_tags::$(tags)"
 
