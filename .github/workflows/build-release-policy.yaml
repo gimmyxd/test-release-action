@@ -25,12 +25,21 @@ jobs:
 
     - name: Calculate Tag
       uses: aserto-dev/sver-action@v0.0.14
-      id: "sver"
+      id: "tags"
       with:
         docker_image: ${{ steps.config.outputs.repo }}
         docker_registry: ${{ steps.config.outputs.server }}
         docker_username: ${{ steps.config.outputs.username }}
         docker_password: ${{ secrets.ASERTO_BETA_PUSH_KEY }}
+      run: |
+        tags=""
+        repo_name="${{ steps.config.outputs.repo }}"
+
+        while read -r tag; do
+          tags="$tags $repo_name:$tag "
+        done < <(echo "${{ steps.tags.outputs.version }}")
+
+        echo ::set-output name=target_tags::$tags
 
     - name: Policy Login
       id: policy-login
@@ -52,24 +61,12 @@ jobs:
 
     - name: Policy Tag
       id: policy-tag
-      uses: opcr-io/policy-tag-action@614dcf4194f3cd8690ca5e32142fb6f3260e8255
+      uses: opcr-io/policy-tag-action@@e635701fb7abeb4dfb45a091655271a3bbe11676
       with:
         source_tag: ${{ steps.config.outputs.repo }}
-        target_tags: ${{ steps.sver.outputs.version }}
+        target_tags: ${{ steps.tags.outputs.target_tags }}
       env:
         POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
-
-    - name: Calculate Push Tags
-      id: push-tags
-      run: |
-        tags=""
-        repo_name="${{ steps.config.outputs.repo }}"
-
-        while read -r tag; do
-          tags="$tags $repo_name:$tag "
-        done < <(echo "${{ steps.sver.outputs.version }}")
-
-        echo ::set-output name=target_tags::$tags
 
     - name: Policy Push
       id: policy-push
