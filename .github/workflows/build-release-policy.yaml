@@ -59,13 +59,26 @@ jobs:
       env:
         POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
-    # - name: Policy Push
-    #   id: policy-push
-    #   uses: opcr-io/policy-push-action@v1
-    #   with:
-    #     tag: ${{ steps.config.outputs.repo }}:${{ steps.sver.outputs.version }}
-    #   env:
-    #     POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
+    - name: Calculate Push Tags
+      id: push-tags
+      run: |
+        target_tags=""
+        repo_name="${{ steps.config.outputs.repo }}"
+        tags = ${{ steps.sver.outputs.version }}
+
+        for tag in $tags; do
+          target_tags+="$repo_name:$tag "
+        done
+
+      echo "::set-output name=target_tags::$(target_tags)"
+
+    - name: Policy Push
+      id: policy-push
+      uses: opcr-io/policy-push-action@v1
+      with:
+        tag: ${{ steps.push-tags.outputs.target_tags }}
+      env:
+        POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
     # - name: Policy Logout
     #   id: policy-logout
