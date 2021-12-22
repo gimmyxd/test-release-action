@@ -66,10 +66,10 @@ jobs:
         repo_name="${{ steps.config.outputs.repo }}"
 
         while read -r tag; do
-          tags="$tags repo_name:$tag "
+          tags="$tags $repo_name:$tag "
         done < <(echo "${{ steps.sver.outputs.version }}")
 
-        echo "::set-output name=target_tags::$(tags)"
+        echo ::set-output name=target_tags::$tags
 
     - name: Policy Push
       id: policy-push
