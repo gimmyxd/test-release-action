@@ -62,15 +62,14 @@ jobs:
     - name: Calculate Push Tags
       id: push-tags
       run: |
-        target_tags=""
+        tags=""
         repo_name="${{ steps.config.outputs.repo }}"
-        tags = ${{ steps.sver.outputs.version }}
 
-        for tag in $tags; do
-          target_tags+="$repo_name:$tag "
+        for tag in "${{ steps.sver.outputs.version }}"; do
+          tags+="$repo_name:$tag "
         done
 
-        echo "::set-output name=target_tags::$(target_tags)"
+        echo "::set-output name=target_tags::$(tags)"
 
     - name: Policy Push
       id: policy-push
