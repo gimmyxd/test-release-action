@@ -75,7 +75,7 @@ jobs:
       id: policy-push
       uses: opcr-io/policy-push-action@4644475d0590b6cc0bb6edc27d51e9f24404e21d
       with:
-        tag: ${{ steps.tags.outputs.target_tags }}
+        tags: ${{ steps.tags.outputs.target_tags }}
       env:
         POLICY_DEFAULT_DOMAIN: ${{ steps.config.outputs.server }}
 
