@@ -51,7 +51,7 @@ jobs:
 
     - name: Policy Build
       id: policy-build
-      uses: opcr-io/policy-build-action@v1
+      uses: opcr-io/policy-build-action@v2
       with:
         src: src
         tag: ${{ steps.config.outputs.repo }}
@@ -78,6 +78,6 @@ jobs:
 
     - name: Policy Logout
       id: policy-logout
-      uses: opcr-io/policy-logout-action@v1
+      uses: opcr-io/policy-logout-action@v2
       with:
         server: ${{ steps.config.outputs.server }}
