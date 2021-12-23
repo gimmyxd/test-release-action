@@ -61,7 +61,7 @@ jobs:
 
     - name: Policy Tag
       id: policy-tag
-      uses: opcr-io/policy-tag-action@48fa6a868f6f3472810f1f95664413cb46b845d3
+      uses: opcr-io/policy-tag-action@ef98f552e54f7085209f68068ff897b3ba912a49
       with:
         source_tag: ${{ steps.config.outputs.repo }}
         target_tags: ${{ steps.tags.outputs.target_tags }}
