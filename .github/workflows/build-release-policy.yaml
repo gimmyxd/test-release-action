@@ -61,7 +61,7 @@ jobs:
 
     - name: Policy Tag
       id: policy-tag
-      uses: opcr-io/policy-tag-action@ef98f552e54f7085209f68068ff897b3ba912a49
+      uses: opcr-io/policy-tag-action@v2
       with:
         source_tag: ${{ steps.config.outputs.repo }}
         target_tags: ${{ steps.tags.outputs.target_tags }}
@@ -70,7 +70,7 @@ jobs:
 
     - name: Policy Push
       id: policy-push
-      uses: opcr-io/policy-push-action@c9525e0a94b49eb0846d0034b9d03371f58853ec
+      uses: opcr-io/policy-push-action@v2
       with:
         tags: ${{ steps.tags.outputs.target_tags }}
       env:
